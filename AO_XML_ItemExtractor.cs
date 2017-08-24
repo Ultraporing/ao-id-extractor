@@ -94,11 +94,13 @@ namespace XmlThingy
                     XmlElement ele = FindElement(node, "enchantments");
                     if (ele != null)
                     {
+                        int entchantLvl = 0;
                         foreach (XmlElement el in ele.ChildNodes)
                         {
-                            string eName = node.Attributes["uniquename"].Value;
+                            string eName = node.Attributes["uniquename"].Value + "@" + el.Attributes["enchantmentlevel"].Value;
                             outputList.Add("[" + index + "]:" + eName);
                             index++;
+                            entchantLvl++;
                         }
                     }
 
