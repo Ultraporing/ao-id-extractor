@@ -1,0 +1,17 @@
+# Albion Online BIN decrypter + unpacker
+# script for QuickBMS http://quickbms.aluigi.org
+
+set KEY binary "\x30\xEF\x72\x47\x42\xF2\x04\x32"
+set IV binary  "\x0E\xA6\xDC\x89\xDB\xED\xDC\x4F"
+
+get SIZE asize
+get NAME basename
+string NAME += ".xml"
+log MEMORY_FILE 0 0
+
+encryption des_cbc KEY IV
+log MEMORY_FILE 0 SIZE
+encryption "" ""
+
+comtype gzip
+clog NAME 0 SIZE SIZE MEMORY_FILE
