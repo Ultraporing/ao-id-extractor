@@ -83,7 +83,13 @@ namespace XmlThingy
                 if (node.NodeType == XmlNodeType.Element)
                 {
                     string aName = node.Attributes["uniquename"].Value;
-                    outputList.Add("[" + index + "]:" + aName);
+                    XmlAttribute ent = node.Attributes["enchantmentlevel"];
+                    string entch = "";
+                    if (ent != null)
+                    {
+                        entch = "@" + ent.Value;
+                    }
+                    outputList.Add("[" + index + "]:" + aName + entch);
                     index++;
 
                     if (node.Name == "journalitem")
@@ -94,13 +100,11 @@ namespace XmlThingy
                     XmlElement ele = FindElement(node, "enchantments");
                     if (ele != null)
                     {
-                        int entchantLvl = 0;
                         foreach (XmlElement el in ele.ChildNodes)
                         {
                             string eName = node.Attributes["uniquename"].Value + "@" + el.Attributes["enchantmentlevel"].Value;
                             outputList.Add("[" + index + "]:" + eName);
                             index++;
-                            entchantLvl++;
                         }
                     }
 
