@@ -12,17 +12,77 @@ namespace ao_id_extractor
 {
     class Program
     {
+        static void PrintCmdHelp()
+        {
+            Console.WriteLine("How to use:\nao-id-extractor.exe modeID outFormat [outFolder]\n" +
+                "modeID\t\t#0=Item Extraction, 1= Location Extraction, 2=Both\n" +
+                "outFormat\t#l=Text List, j=JSON\n" +
+                "[outFolder]\t#OPTITIONAL: Output folder path. Default: current directory");
+        }
+
+        static List<string> ParseCommandline(string[] args)
+        {
+            string modeID;
+            string outFormat;
+            string outFolder = "";
+
+            if (args.Length >= 2)
+            {
+                
+                if (int.Parse(args[0]) > -1 && int.Parse(args[0]) <= 2)
+                {
+                    modeID = args[0];
+                }
+                else
+                {
+                    PrintCmdHelp();
+                    return null;
+                }
+
+                
+                if (args[1] == "l" || args[1] == "j")
+                {
+                    outFormat = args[1];
+                }
+                else
+                {
+                    PrintCmdHelp();
+                    return null;
+                }
+
+                if (args.Length == 3)
+                {
+                    outFolder = args[2];
+                }
+            }
+            else
+            {
+                PrintCmdHelp();
+                return null;
+            }
+
+            return new List<string>() { modeID, outFormat, outFolder};
+        }
+
         static void Main(string[] args)
         {
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Views.MainView());
+            List<string> cmds = ParseCommandline(args);
 
-            
+            if (cmds == null)
+            {
+                Console.Read();
+                return;
+            }
 
+            if (cmds[0] == "0" || cmds[0] == "2")
+            {
+                new Extractors.ItemExtractor(cmds[2], cmds[1] == "l" ? Extractors.ExportType.TextList : Extractors.ExportType.Json).Extract();
+            }
 
-            Extractors.LocationExtractor aol = new Extractors.LocationExtractor("", Extractors.ExportType.TextList);
-            aol.Extract();
+            if (cmds[0] == "1" || cmds[0] == "2")
+            {
+                new Extractors.LocationExtractor(cmds[2], cmds[1] == "l" ? Extractors.ExportType.TextList : Extractors.ExportType.Json).Extract();
+            }
         }
     }
 }

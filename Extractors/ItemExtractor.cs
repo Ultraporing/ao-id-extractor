@@ -75,9 +75,9 @@ namespace ao_id_extractor.Extractors
 
             foreach (IDContainer j in journals)
             {
-                outputList.Add(new IDContainer() { ID = index.ToString(), Name = j + "_EMPTY" });
+                outputList.Add(new IDContainer() { ID = index.ToString(), Name = j.Name + "_EMPTY" });
                 index++;
-                outputList.Add(new IDContainer() { ID = index.ToString(), Name = j + "_FULL" });
+                outputList.Add(new IDContainer() { ID = index.ToString(), Name = j.Name + "_FULL" });
                 index++;
             }
 
