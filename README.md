@@ -1,3 +1,2 @@
-# ao-itemid-extractor
-The tool takes the Items.bin file and Exports the ItemID's to the output file. If no output is given AOItems.txt is used.
-ao-itemid-extractor <ItemsBinFile> [outputfile]
+# ao-id-extractor
+The tool allowes you to extract the ID's and Names of Items and Locations, and export them to a file as a List or JSON.

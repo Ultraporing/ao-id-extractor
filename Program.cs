@@ -1,32 +1,28 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 
-namespace XmlThingy
+namespace ao_id_extractor
 {
     class Program
     {
-
         static void Main(string[] args)
         {
-            if (args.Length == 0)
-            {
-                Console.WriteLine("ao-itemid-extractor <ItemsBinFile> [outputfile]");
-                Console.ReadKey();
-                return;
-            }
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //Application.Run(new Views.MainView());
 
-            // Create the extractor
-            AO_XML_ItemExtractor aox = new AO_XML_ItemExtractor();
             
-            // use the Bin specified in the first parameter
-            List<string> items = aox.Extract(args[0]);
 
-            // Write items to file specified in second param or default name
-            aox.WriteToFile(args.Length > 1 ? args[1] : "AOItems.txt", items);
+
+            Extractors.LocationExtractor aol = new Extractors.LocationExtractor("", Extractors.ExportType.TextList);
+            aol.Extract();
         }
     }
 }
