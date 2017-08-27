@@ -4,6 +4,6 @@ This tool allows you to extract the ID's and Names of Items and Locations from t
 How to use:
 `ao-id-extractor.exe modeID outFormat [outFolder]`
 
-modeID          `0=Item Extraction, 1= Location Extraction, 2=Both`
-outFormat      `l=Text List, j=JSON`
+modeID          `0=Item Extraction, 1= Location Extraction, 2=Both`  
+outFormat      `l=Text List, j=JSON`  
 [outFolder]     `Optional: Output folder path. Default: current directory`
