@@ -14,7 +14,7 @@ namespace ao_id_extractor.Extractors
     {
         public LocationExtractor(string outputFolderPath, ExportType exportType) : base(outputFolderPath, exportType)
         {
-            BinFilePath = Path.Combine(AOLauncherFolder, @"..\game\Albion-Online_Data\StreamingAssets\GameData\cluster\world.bin");
+            
         }
         
         protected override List<IDContainer> ExtractFromXML(string xmlFile)
@@ -49,6 +49,11 @@ namespace ao_id_extractor.Extractors
             ms.Close();
 
             return outputList.ToList();
+        }
+
+        protected override string GetBinFilePath()
+        {
+            return Path.Combine(AOLauncherFolder, @"..\game\Albion-Online_Data\StreamingAssets\GameData\cluster\world.bin");
         }
     }
 }

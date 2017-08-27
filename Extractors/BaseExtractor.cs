@@ -27,7 +27,6 @@ namespace ao_id_extractor.Extractors
 
     public abstract class BaseExtractor
     {
-        protected string BinFilePath { get; set; }
         protected string OutputFolderPath { get; set; }
         protected ExportType ExportType { get; set; }
         protected string AOLauncherFolder { get; set; }
@@ -40,7 +39,8 @@ namespace ao_id_extractor.Extractors
             string obj = (string)Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SandboxAlbionOnline", false).GetValue("DisplayIcon");
             AOLauncherFolder = Path.GetDirectoryName(obj.Trim('\"'));
         }
-        
+
+        protected abstract string GetBinFilePath();
         protected abstract List<IDContainer> ExtractFromXML(string xmlFile);
 
         protected XmlElement FindElement(XmlNode node, string elementName)
@@ -58,7 +58,7 @@ namespace ao_id_extractor.Extractors
 
         public void Extract()
         {
-            string s = DecryptBinFile(BinFilePath);
+            string s = DecryptBinFile(GetBinFilePath());
             List<IDContainer> ls = ExtractFromXML(s);
             File.Delete(s);
 
@@ -89,7 +89,7 @@ namespace ao_id_extractor.Extractors
         private void WriteToFile(List<IDContainer> items)
         {
 
-            string filePath = Path.Combine(OutputFolderPath, Path.GetFileNameWithoutExtension(BinFilePath)) + (ExportType == ExportType.TextList ? ".txt" : ".json");
+            string filePath = Path.Combine(OutputFolderPath, Path.GetFileNameWithoutExtension(GetBinFilePath())) + (ExportType == ExportType.TextList ? ".txt" : ".json");
             StreamWriter sw = File.CreateText(filePath);
             
             if (ExportType == ExportType.TextList)
