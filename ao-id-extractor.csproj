@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extractors\BinaryDecrypter.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Extractors\LocationExtractor.cs" />
     <Compile Include="Extractors\ItemExtractor.cs" />
@@ -54,15 +55,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="quickbms.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
-    <None Include="decryptAObin.bms">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="README.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

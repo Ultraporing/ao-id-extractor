@@ -67,21 +67,12 @@ namespace ao_id_extractor.Extractors
 
         private string DecryptBinFile(string binFile)
         {
+            string output = BinaryDecrypter.DecryptBinaryFile("items.bin");
             string binFileWOE = Path.GetFileNameWithoutExtension(binFile);
 
-            // Start the child process.
-            Process p = new Process();
-            // Redirect the output stream of the child process.
-            p.StartInfo.UseShellExecute = false;
-            p.StartInfo.RedirectStandardOutput = true;
-            p.StartInfo.FileName = "quickbms.exe";
-            p.StartInfo.Arguments = "-R -Q decryptAObin.bms " + binFile + " .";
-
-            p.Start();
-
-            string output = p.StandardOutput.ReadToEnd();
-
-            p.WaitForExit();
+            StreamWriter sw = File.CreateText(binFileWOE + ".xml");
+            sw.Write(output);
+            sw.Close();
 
             return binFileWOE + ".xml";
         }
@@ -90,6 +81,11 @@ namespace ao_id_extractor.Extractors
         {
 
             string filePath = Path.Combine(OutputFolderPath, Path.GetFileNameWithoutExtension(GetBinFilePath())) + (ExportType == ExportType.TextList ? ".txt" : ".json");
+            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+            {
+                DirectoryInfo di = Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
+
             StreamWriter sw = File.CreateText(filePath);
             
             if (ExportType == ExportType.TextList)
