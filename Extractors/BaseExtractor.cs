@@ -15,8 +15,16 @@ namespace ao_id_extractor.Extractors
 {
     public class IDContainer
     {
-        public string ID { get; set; }
-        public string Name { get; set; }
+        public string Index { get; set; }
+        public string UniqueName { get; set; }
+    }
+
+    public class ItemContainer : IDContainer
+    {
+        public string LocalizationNameVariable { get; set; }
+        public string LocalizationDescriptionVariable { get; set; }
+        public Dictionary<string, string> LocalizedNames { get; set; }
+        public Dictionary<string, string> LocalizedDescriptions { get; set; }
     }
 
     public enum ExportType
@@ -67,7 +75,7 @@ namespace ao_id_extractor.Extractors
 
         private string DecryptBinFile(string binFile)
         {
-            string output = BinaryDecrypter.DecryptBinaryFile("items.bin");
+            string output = BinaryDecrypter.DecryptBinaryFile(binFile);
             string binFileWOE = Path.GetFileNameWithoutExtension(binFile);
 
             StreamWriter sw = File.CreateText(binFileWOE + ".xml");
@@ -92,7 +100,7 @@ namespace ao_id_extractor.Extractors
             {
                 foreach (IDContainer i in items)
                 {
-                    sw.WriteLine("{0}:{1}", i.ID, i.Name);
+                    sw.WriteLine("{0}:{1}", i.Index, i.UniqueName);
                 }               
             }
             else if (ExportType == ExportType.Json)

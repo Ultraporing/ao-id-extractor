@@ -42,7 +42,7 @@ namespace ao_id_extractor.Extractors
                 while (count > 0);
 
                 var i = Array.IndexOf(memory.ToArray(), (byte)60);
-                return System.Text.Encoding.Default.GetString(memory.ToArray(), i, memory.ToArray().Length - i);
+                return System.Text.Encoding.UTF8.GetString(memory.ToArray(), i, memory.ToArray().Length - i);
             }
         }
     }

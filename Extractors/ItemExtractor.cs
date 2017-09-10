@@ -12,6 +12,9 @@ namespace ao_id_extractor.Extractors
 {
     public class ItemExtractor : BaseExtractor
     {
+        private readonly string LocalizationItemPrefix = "@ITEMS_";
+        private readonly string LocalizationItemDescPostfix = "_DESC";
+
         public ItemExtractor(string outputFolderPath, ExportType exportType) : base(outputFolderPath, exportType)
         {
         }
@@ -42,17 +45,21 @@ namespace ao_id_extractor.Extractors
                 {
                     string aName = node.Attributes["uniquename"].Value;
                     XmlAttribute ent = node.Attributes["enchantmentlevel"];
+                    XmlAttribute desc = node.Attributes["descriptionlocatag"];
+                    XmlAttribute name = node.Attributes["descvariable0"];
                     string entch = "";
                     if (ent != null)
                     {
                         entch = "@" + ent.Value;
                     }
-                    outputList.Add(new IDContainer() { ID = index.ToString(), Name = aName + entch });
+                    outputList.Add(new ItemContainer() { Index = index.ToString(), UniqueName = aName + entch,
+                        LocalizationDescriptionVariable = desc != null ? desc.Value : LocalizationItemPrefix + aName + LocalizationItemDescPostfix, LocalizationNameVariable = name != null ? name.Value : LocalizationItemPrefix + aName
+                    });
                     index++;
 
                     if (node.Name == "journalitem")
                     {
-                        journals.Add(new IDContainer() { Name = aName });
+                        journals.Add(new ItemContainer() { UniqueName = aName});
                     }
 
                     XmlElement ele = FindElement(node, "enchantments");
@@ -61,7 +68,7 @@ namespace ao_id_extractor.Extractors
                         foreach (XmlElement el in ele.ChildNodes)
                         {
                             string eName = node.Attributes["uniquename"].Value + "@" + el.Attributes["enchantmentlevel"].Value;
-                            outputList.Add(new IDContainer() { ID = index.ToString(), Name = eName });
+                            outputList.Add(new ItemContainer() { Index = index.ToString(), UniqueName = eName, LocalizationDescriptionVariable = desc != null ? desc.Value : LocalizationItemPrefix + aName + LocalizationItemDescPostfix, LocalizationNameVariable = name != null ? name.Value : LocalizationItemPrefix + aName });
 
                             index++;
                         }
@@ -73,15 +80,105 @@ namespace ao_id_extractor.Extractors
             ms.Close();
 
 
-            foreach (IDContainer j in journals)
+            foreach (ItemContainer j in journals)
             {
-                outputList.Add(new IDContainer() { ID = index.ToString(), Name = j.Name + "_EMPTY" });
+                outputList.Add(new ItemContainer() { Index = index.ToString(), UniqueName = j.UniqueName + "_EMPTY", LocalizationDescriptionVariable = LocalizationItemPrefix + j.UniqueName + "_EMPTY" + LocalizationItemDescPostfix, LocalizationNameVariable = LocalizationItemPrefix + j.UniqueName + "_EMPTY" });
                 index++;
-                outputList.Add(new IDContainer() { ID = index.ToString(), Name = j.Name + "_FULL" });
+                outputList.Add(new ItemContainer() { Index = index.ToString(), UniqueName = j.UniqueName + "_FULL", LocalizationDescriptionVariable = LocalizationItemPrefix + j.UniqueName + "_FULL" + LocalizationItemDescPostfix, LocalizationNameVariable = LocalizationItemPrefix + j.UniqueName + "_FULL" });
                 index++;
             }
 
+            ExtractAndSetLocalization(outputList);
+
             return outputList;
+        }
+
+        private void ExtractAndSetLocalization(List<IDContainer> itemsList)
+        {
+            string localizationXML = BinaryDecrypter.DecryptBinaryFile(Path.Combine(AOLauncherFolder, @"..\game\Albion-Online_Data\StreamingAssets\GameData\localization.bin"));
+
+            // Param 0 is the xml file
+            byte[] encodedString = Encoding.UTF8.GetBytes(localizationXML);
+
+            // Put the byte array into a stream and rewind it to the beginning
+            MemoryStream ms = new MemoryStream(encodedString);
+            ms.Flush();
+            ms.Position = 0;
+            
+            // Build the XmlDocument from the MemorySteam of UTF-8 encoded bytes
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(ms);
+
+            XmlNode rootNode = xmlDoc.LastChild.LastChild;
+
+            foreach (XmlNode node in rootNode.ChildNodes)
+            {
+                if (node.NodeType == XmlNodeType.Element)
+                {
+                    XmlAttribute tuid = node.Attributes["tuid"];
+                    if (tuid != null)
+                    {
+                        if (tuid.Value.StartsWith(LocalizationItemPrefix))
+                        {
+                            // is the item description
+                            if (tuid.Value.EndsWith(LocalizationItemDescPostfix))
+                            {
+                                List<IDContainer> item = itemsList.FindAll(cont => ((ItemContainer)cont).LocalizationDescriptionVariable == tuid.Value);
+
+                                Dictionary<string, string> descDict = new Dictionary<string, string>();
+                                foreach (XmlNode n in node.ChildNodes)
+                                {
+                                    string lang = n.Attributes["xml:lang"].Value;
+                                    string desc = n.LastChild.InnerText;
+
+                                    descDict.Add(lang, desc);
+                                }
+
+                                foreach (ItemContainer cont in item)
+                                {
+                                    cont.LocalizedDescriptions = descDict;
+                                }
+                            }
+                            // is item name
+                            else
+                            {
+                                List<IDContainer> item = itemsList.FindAll(cont => ((ItemContainer)cont).LocalizationNameVariable == tuid.Value);
+
+                                Dictionary<string, string> nameDict = new Dictionary<string, string>();
+                                foreach (XmlNode n in node.ChildNodes)
+                                {
+                                    string lang = n.Attributes["xml:lang"].Value;
+                                    string name = n.LastChild.InnerText;
+
+                                    nameDict.Add(lang, name);
+                                }
+
+                                foreach (ItemContainer cont in item)
+                                {
+                                    cont.LocalizedNames = nameDict;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            foreach (ItemContainer cont in itemsList)
+            {
+                if (cont.LocalizedDescriptions == null)
+                {
+                    cont.LocalizationDescriptionVariable = null;
+                }
+
+                if (cont.LocalizedNames == null)
+                {
+                    cont.LocalizationNameVariable = null;
+                }
+            }
         }
 
         protected override string GetBinFilePath()

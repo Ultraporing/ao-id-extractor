@@ -42,7 +42,7 @@ namespace ao_id_extractor.Extractors
                     string locID = node.Attributes["id"].Value;
                     string locName = node.Attributes["displayname"].Value;
 
-                    outputList.Add(new IDContainer() { ID = locID, Name = locName });
+                    outputList.Add(new IDContainer() { Index = locID, UniqueName = locName });
                 }
             }
 

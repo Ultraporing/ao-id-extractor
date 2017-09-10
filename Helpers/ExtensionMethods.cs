@@ -70,6 +70,7 @@ namespace ao_id_extractor.Helpers
         public static string ToJSON(this object obj)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
+            serializer.MaxJsonLength = Int32.MaxValue;
             return serializer.Serialize(obj);
         }
 
@@ -77,6 +78,7 @@ namespace ao_id_extractor.Helpers
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             serializer.RecursionLimit = recursionDepth;
+            serializer.MaxJsonLength = Int32.MaxValue;
             return serializer.Serialize(obj);
         }
 
