@@ -46,11 +46,59 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="obfClasses\a.cs" />
     <Compile Include="Extractors\BinaryDecrypter.cs" />
+    <Compile Include="obfClasses\ae6.cs" />
+    <Compile Include="obfClasses\aeg.cs" />
+    <Compile Include="obfClasses\aej.cs" />
+    <Compile Include="obfClasses\akz.cs" />
+    <Compile Include="obfClasses\al5.cs" />
+    <Compile Include="obfClasses\al6.cs" />
+    <Compile Include="obfClasses\AttackType.cs" />
+    <Compile Include="obfClasses\b0.cs" />
+    <Compile Include="obfClasses\b1.cs" />
+    <Compile Include="obfClasses\bx.cs" />
+    <Compile Include="obfClasses\by.cs" />
+    <Compile Include="obfClasses\bz.cs" />
+    <Compile Include="obfClasses\ce.cs" />
+    <Compile Include="obfClasses\cg.cs" />
+    <Compile Include="obfClasses\ch.cs" />
+    <Compile Include="obfClasses\ci.cs" />
+    <Compile Include="obfClasses\cu.cs" />
+    <Compile Include="obfClasses\cv.cs" />
+    <Compile Include="obfClasses\doo.cs" />
+    <Compile Include="obfClasses\dq.cs" />
+    <Compile Include="obfClasses\e5.cs" />
+    <Compile Include="obfClasses\e7.cs" />
+    <Compile Include="obfClasses\ep.cs" />
+    <Compile Include="obfClasses\EquipmentSlot.cs" />
+    <Compile Include="obfClasses\ew.cs" />
+    <Compile Include="obfClasses\GuildRole.cs" />
+    <Compile Include="obfClasses\hn.cs" />
+    <Compile Include="obfClasses\hv.cs" />
+    <Compile Include="obfClasses\hw.cs" />
+    <Compile Include="obfClasses\hx.cs" />
+    <Compile Include="obfClasses\i0.cs" />
+    <Compile Include="obfClasses\ItemContainerErrorCode.cs" />
+    <Compile Include="obfClasses\ItemPowerProgressionType.cs" />
+    <Compile Include="obfClasses\n.cs" />
+    <Compile Include="obfClasses\n8.cs" />
+    <Compile Include="obfClasses\ne.cs" />
+    <Compile Include="obfClasses\oa.cs" />
+    <Compile Include="obfClasses\od.cs" />
+    <Compile Include="obfClasses\oe.cs" />
+    <Compile Include="Extractors\ResourceExtractor.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Extractors\LocationExtractor.cs" />
     <Compile Include="Extractors\ItemExtractor.cs" />
     <Compile Include="Extractors\BaseExtractor.cs" />
+    <Compile Include="obfClasses\ald.cs" />
+    <Compile Include="obfClasses\GameTimeStamp.cs" />
+    <Compile Include="obfClasses\of.cs" />
+    <Compile Include="obfClasses\og.cs" />
+    <Compile Include="obfClasses\om.cs" />
+    <Compile Include="obfClasses\PlayerAttribute.cs" />
+    <Compile Include="obfClasses\s.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,5 +108,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

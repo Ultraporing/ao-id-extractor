@@ -75,14 +75,19 @@ namespace ao_id_extractor
                 return;
             }
 
-            if (cmds[0] == "0" || cmds[0] == "2")
+            if (cmds[0] == "0" || cmds[0] == "3")
             {
                 new Extractors.ItemExtractor(cmds[2], cmds[1] == "l" ? Extractors.ExportType.TextList : Extractors.ExportType.Json).Extract();
             }
 
-            if (cmds[0] == "1" || cmds[0] == "2")
+            if (cmds[0] == "1" || cmds[0] == "3")
             {
                 new Extractors.LocationExtractor(cmds[2], cmds[1] == "l" ? Extractors.ExportType.TextList : Extractors.ExportType.Json).Extract();
+            }
+
+            if (cmds[0] == "2" || cmds[0] == "3")
+            {
+                new Extractors.ResourceExtractor(cmds[2], cmds[1] == "l" ? Extractors.ExportType.TextList : Extractors.ExportType.Json).Extract();
             }
         }
     }
