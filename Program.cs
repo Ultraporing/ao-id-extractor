@@ -68,12 +68,15 @@ namespace ao_id_extractor
         static void Main(string[] args)
         {
             List<string> cmds = ParseCommandline(args);
-
+            
             if (cmds == null)
             {
                 Console.Read();
                 return;
             }
+
+            if (cmds[2] == "")
+                cmds[2] = Directory.GetCurrentDirectory();
 
             if (cmds[0] == "0" || cmds[0] == "3")
             {
