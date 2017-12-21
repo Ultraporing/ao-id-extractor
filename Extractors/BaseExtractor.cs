@@ -49,7 +49,7 @@ namespace ao_id_extractor.Extractors
         }
 
         protected abstract string GetBinFilePath();
-        protected abstract List<IDContainer> ExtractFromXML(string xmlFile);
+        protected abstract List<IDContainer> ExtractFromXML(string xmlFile, bool withLocal = true);
 
         protected XmlElement FindElement(XmlNode node, string elementName)
         {
@@ -64,13 +64,19 @@ namespace ao_id_extractor.Extractors
             return null;
         }
 
-        public void Extract()
+        public void Extract(bool withLocal = true)
         {
             string s = DecryptBinFile(GetBinFilePath());
-            List<IDContainer> ls = ExtractFromXML(s);
+            List<IDContainer> ls = ExtractFromXML(s, withLocal);
             File.Delete(s);
 
             WriteToFile(ls);
+        }
+
+        public List<IDContainer> PureExtract(bool withLocal = true)
+        {
+            string s = DecryptBinFile(GetBinFilePath());
+            return ExtractFromXML(s, withLocal);
         }
 
         private string DecryptBinFile(string binFile)

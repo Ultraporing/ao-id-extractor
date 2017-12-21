@@ -19,7 +19,7 @@ namespace ao_id_extractor.Extractors
         {
         }
 
-        protected override List<IDContainer> ExtractFromXML(string xmlFile)
+        protected override List<IDContainer> ExtractFromXML(string xmlFile, bool withLocal = true)
         {
             List<IDContainer> outputList = new List<IDContainer>();
             List<IDContainer> journals = new List<IDContainer>();
@@ -48,7 +48,7 @@ namespace ao_id_extractor.Extractors
                     XmlAttribute desc = node.Attributes["descriptionlocatag"];
                     XmlAttribute name = node.Attributes["descvariable0"];
                     string entch = "";
-                    if (ent != null)
+                    if (ent != null && ent.Value != "0")
                     {
                         entch = "@" + ent.Value;
                     }
@@ -88,7 +88,8 @@ namespace ao_id_extractor.Extractors
                 index++;
             }
 
-            ExtractAndSetLocalization(outputList);
+            if (withLocal)
+                ExtractAndSetLocalization(outputList);
 
             return outputList;
         }

@@ -17,7 +17,7 @@ namespace ao_id_extractor.Extractors
             
         }
         
-        protected override List<IDContainer> ExtractFromXML(string xmlFile)
+        protected override List<IDContainer> ExtractFromXML(string xmlFile, bool withLocal = true)
         {
             HashSet<IDContainer> outputList = new HashSet<IDContainer>();
 
