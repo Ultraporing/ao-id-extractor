@@ -12,11 +12,11 @@ namespace ao_id_extractor.Extractors
 {
     public class LocationExtractor : BaseExtractor
     {
-        public LocationExtractor(string outputFolderPath, ExportType exportType) : base(outputFolderPath, exportType)
+        public LocationExtractor(string outputFolderPath, ExportType exportType, string gameFolder) : base(outputFolderPath, exportType, gameFolder)
         {
-            
+
         }
-        
+
         protected override List<IDContainer> ExtractFromXML(string xmlFile, bool withLocal = true)
         {
             HashSet<IDContainer> outputList = new HashSet<IDContainer>();
@@ -53,7 +53,7 @@ namespace ao_id_extractor.Extractors
 
         protected override string GetBinFilePath()
         {
-            return Path.Combine(AOLauncherFolder, @"..\game\Albion-Online_Data\StreamingAssets\GameData\cluster\world.bin");
+            return Path.Combine(MainGameFolder, @".\game\Albion-Online_Data\StreamingAssets\GameData\cluster\world.bin");
         }
     }
 }

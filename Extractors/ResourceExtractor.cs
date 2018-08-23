@@ -11,15 +11,15 @@ using System.Xml;
 
 namespace ao_id_extractor.Extractors
 {
-    
+
 
     public class ResourceExtractor : BaseExtractor
     {
-        public ResourceExtractor(string outputFolderPath, ExportType exportType) : base(outputFolderPath, exportType)
+        public ResourceExtractor(string outputFolderPath, ExportType exportType, string gameFolder) : base(outputFolderPath, exportType, gameFolder)
         {
-            
+
         }
-        
+
         protected override List<IDContainer> ExtractFromXML(string xmlFile, bool withLocal = true)
         {
             HashSet<IDContainer> outputList = new HashSet<IDContainer>();
@@ -42,7 +42,8 @@ namespace ao_id_extractor.Extractors
             {
                 if (node.NodeType == XmlNodeType.Element)
                 {
-                    string locID = node.Attributes["id"].Value;
+                    string locID = node.Attributes["id"]?.Value;
+                    if (string.IsNullOrEmpty(locID)) { continue; }
                     string locName = node.Attributes["displayname"].Value;
 
                     outputList.Add(new IDContainer() { Index = locID, UniqueName = locName });
@@ -53,10 +54,10 @@ namespace ao_id_extractor.Extractors
 
             return outputList.ToList();
         }
-        
+
         protected override string GetBinFilePath()
         {
-            return Path.Combine(AOLauncherFolder, @"..\game\Albion-Online_Data\StreamingAssets\GameData\resources.bin");
+            return Path.Combine(MainGameFolder, @".\game\Albion-Online_Data\StreamingAssets\GameData\resources.bin");
         }
     }
 }

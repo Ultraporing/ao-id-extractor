@@ -15,7 +15,7 @@ namespace ao_id_extractor.Extractors
         private readonly string LocalizationItemPrefix = "@ITEMS_";
         private readonly string LocalizationItemDescPostfix = "_DESC";
 
-        public ItemExtractor(string outputFolderPath, ExportType exportType) : base(outputFolderPath, exportType)
+        public ItemExtractor(string outputFolderPath, ExportType exportType, string gameFolder) : base(outputFolderPath, exportType, gameFolder)
         {
         }
 
@@ -52,14 +52,18 @@ namespace ao_id_extractor.Extractors
                     {
                         entch = "@" + ent.Value;
                     }
-                    outputList.Add(new ItemContainer() { Index = index.ToString(), UniqueName = aName + entch,
-                        LocalizationDescriptionVariable = desc != null ? desc.Value : LocalizationItemPrefix + aName + LocalizationItemDescPostfix, LocalizationNameVariable = name != null ? name.Value : LocalizationItemPrefix + aName
+                    outputList.Add(new ItemContainer()
+                    {
+                        Index = index.ToString(),
+                        UniqueName = aName + entch,
+                        LocalizationDescriptionVariable = desc != null ? desc.Value : LocalizationItemPrefix + aName + LocalizationItemDescPostfix,
+                        LocalizationNameVariable = name != null ? name.Value : LocalizationItemPrefix + aName
                     });
                     index++;
 
                     if (node.Name == "journalitem")
                     {
-                        journals.Add(new ItemContainer() { UniqueName = aName});
+                        journals.Add(new ItemContainer() { UniqueName = aName });
                     }
 
                     XmlElement ele = FindElement(node, "enchantments");
@@ -96,7 +100,7 @@ namespace ao_id_extractor.Extractors
 
         private void ExtractAndSetLocalization(List<IDContainer> itemsList)
         {
-            string localizationXML = BinaryDecrypter.DecryptBinaryFile(Path.Combine(AOLauncherFolder, @"..\game\Albion-Online_Data\StreamingAssets\GameData\localization.bin"));
+            string localizationXML = BinaryDecrypter.DecryptBinaryFile(Path.Combine(MainGameFolder, @".\game\Albion-Online_Data\StreamingAssets\GameData\localization.bin"));
 
             // Param 0 is the xml file
             byte[] encodedString = Encoding.UTF8.GetBytes(localizationXML);
@@ -105,7 +109,7 @@ namespace ao_id_extractor.Extractors
             MemoryStream ms = new MemoryStream(encodedString);
             ms.Flush();
             ms.Position = 0;
-            
+
             // Build the XmlDocument from the MemorySteam of UTF-8 encoded bytes
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(ms);
@@ -184,7 +188,7 @@ namespace ao_id_extractor.Extractors
 
         protected override string GetBinFilePath()
         {
-            return Path.Combine(AOLauncherFolder, @"..\game\Albion-Online_Data\StreamingAssets\GameData\items.bin");
+            return Path.Combine(MainGameFolder, @".\game\Albion-Online_Data\StreamingAssets\GameData\items.bin");
         }
     }
 }
