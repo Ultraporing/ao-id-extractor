@@ -30,22 +30,27 @@ namespace ao_id_extractor.Extractors
     public enum ExportType
     {
         TextList,
-        Json
+        Json,
+        Both
     }
 
     public abstract class BaseExtractor
     {
         protected string OutputFolderPath { get; set; }
         protected ExportType ExportType { get; set; }
-        protected string AOLauncherFolder { get; set; }
+        protected string MainGameFolder { get; set; }
 
-        public BaseExtractor(string outputFolderPath, ExportType exportType)
+        public BaseExtractor(string outputFolderPath, ExportType exportType, string gameFolder)
         {
             OutputFolderPath = outputFolderPath == string.Empty ? Path.GetDirectoryName(Application.ExecutablePath) : outputFolderPath;
             ExportType = exportType;
+            MainGameFolder = gameFolder;
 
-            string obj = (string)Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SandboxAlbionOnline", false).GetValue("DisplayIcon");
-            AOLauncherFolder = Path.GetDirectoryName(obj.Trim('\"'));
+            if (string.IsNullOrWhiteSpace(MainGameFolder))
+            {
+                string obj = (string)Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\SandboxAlbionOnline", false).GetValue("DisplayIcon");
+                MainGameFolder = Path.Combine(Path.GetDirectoryName(obj.Trim('\"')), "..");
+            }
         }
 
         protected abstract string GetBinFilePath();
@@ -53,9 +58,9 @@ namespace ao_id_extractor.Extractors
 
         protected XmlElement FindElement(XmlNode node, string elementName)
         {
-            foreach (XmlElement ele in node.ChildNodes)
+            foreach (XmlNode childNode in node.ChildNodes)
             {
-                if (ele.Name == elementName)
+                if (childNode is XmlElement ele && ele.Name == elementName)
                 {
                     return ele;
                 }
@@ -94,27 +99,29 @@ namespace ao_id_extractor.Extractors
         private void WriteToFile(List<IDContainer> items)
         {
 
-            string filePath = Path.Combine(OutputFolderPath, Path.GetFileNameWithoutExtension(GetBinFilePath())) + (ExportType == ExportType.TextList ? ".txt" : ".json");
-            if (!Directory.Exists(Path.GetDirectoryName(filePath)))
+            string filePathWithoutExtension = Path.Combine(OutputFolderPath, Path.GetFileNameWithoutExtension(GetBinFilePath()));
+            if (!Directory.Exists(Path.GetDirectoryName(filePathWithoutExtension)))
             {
-                DirectoryInfo di = Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                DirectoryInfo di = Directory.CreateDirectory(Path.GetDirectoryName(filePathWithoutExtension));
             }
 
-            StreamWriter sw = File.CreateText(filePath);
-            
-            if (ExportType == ExportType.TextList)
+            if (ExportType == ExportType.TextList || ExportType == ExportType.Both)
             {
-                foreach (IDContainer i in items)
+                using (var sw = File.CreateText(filePathWithoutExtension + ".txt"))
                 {
-                    sw.WriteLine("{0}:{1}", i.Index, i.UniqueName);
-                }               
+                    foreach (IDContainer i in items)
+                    {
+                        sw.WriteLine("{0}:{1}", i.Index, i.UniqueName);
+                    }
+                }
             }
-            else if (ExportType == ExportType.Json)
+            if (ExportType == ExportType.Json || ExportType == ExportType.Both)
             {
-                sw.Write(JSONHelper.FormatJson(items.ToJSON()));
+                using (var sw = File.CreateText(filePathWithoutExtension + ".json"))
+                {
+                    sw.Write(JSONHelper.FormatJson(items.ToJSON()));
+                }
             }
-
-            sw.Close();
         }
     }
 }
